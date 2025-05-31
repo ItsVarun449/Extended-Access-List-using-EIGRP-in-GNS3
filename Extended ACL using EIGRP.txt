@@ -1,0 +1,54 @@
+enable
+conf t
+hostname R1
+int fa0/0
+ip address 192.168.10.1 255.255.255.0
+no shutdown
+exit
+
+int fa0/1
+ip address 10.10.10.1 255.0.0.0
+no shutdown
+exit
+
+!Extended Access list:
+enable
+conf t
+access-list 120 permit ip 192.168.10.2 255.255.255.0 10.10.10.20 255.0.0.0
+access-list 120 permit ip 192.168.10.3 255.255.255.0 10.10.10.10 255.0.0.0
+access-list 120 deny ip any any
+do wr
+
+int fa0/0
+ip access-group 120 in
+
+!Setting all PC
+
+!192.168.10.2 PC:
+ip 192.168.10.2 255.255.255.0 192.168.10.1
+
+!192.168.10.3 PC:
+ip 192.168.10.3 255.255.255.0 192.168.10.1
+
+!192.168.10.4 PC:
+ip 192.168.10.4 255.255.255.0 192.168.10.1
+
+!192.168.10.5 PC:
+ip 192.168.10.5 255.255.255.0 192.168.10.1
+
+
+!10.10.10.20 PC:
+ip 10.10.10.20 255.0.0.0 10.10.10.1
+
+!10.10.10.10 PC:
+ip 10.10.10.10 255.0.0.0 10.10.10.1
+
+
+enable
+conf t
+router eigrp 65500
+network 192.168.10.0
+network 10.10.10.0
+no auto-summary
+exit
+exit
